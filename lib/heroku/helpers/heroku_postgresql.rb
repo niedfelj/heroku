@@ -87,8 +87,10 @@ module Heroku::Helpers::HerokuPostgresql
   def find_database_url_real_attachment
     primary_db_url = app_config_vars['DATABASE_URL']
     return unless primary_db_url
+    
+    primary_db_url = primary_db_url.match(/(.*)\?.*$/){|m| m[1] }
 
-    real_config = app_config_vars.detect {|k,v| k != 'DATABASE_URL' && v == primary_db_url }
+    real_config = app_config_vars.detect {|k,v| k != 'DATABASE_URL' && v == primary_db_url}
     if real_config
       real = hpg_databases[real_config.first]
       real.primary_attachment! if real
